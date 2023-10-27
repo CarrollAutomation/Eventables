@@ -14,17 +14,17 @@ class Event(object):
             self.on_event_added = Event(_root=False)
             self.on_event_removed = Event(_root=False)
 
-    def __iadd__(self, handler):
-        self._event_listeners.append(handler)
+    def __iadd__(self, func):
+        self._event_listeners.append(func)
         if self._root:
-            self.on_event_added(event=handler)
+            self.on_event_added(event=func)
         return self
 
-    def __isub__(self, handler):
-        if handler in self._event_listeners:
-            self._event_listeners.remove(handler)
+    def __isub__(self, func):
+        if func in self._event_listeners:
+            self._event_listeners.remove(func)
             if self._root:
-                self.on_event_removed(event=handler)
+                self.on_event_removed(event=func)
             return self
 
     def __call__(self, *args, **kwargs):
