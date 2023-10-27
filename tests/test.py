@@ -1,6 +1,6 @@
 import unittest
 
-from simple_events.events import Event
+from simple_events.events import Event, EventList
 from tests.models import EventTestClass
 
 
@@ -37,7 +37,7 @@ class EventTests(unittest.TestCase):
         self.assertEqual(test_class.test_number, 5, f"Test number did not increase during event call")
 
     def test_event_sub_events(self):
-        test_event = Event()
+        test_event = Event(_root=True)
         self.assertEqual(type(test_event.on_event_added), Event, "Event sub event on_event_added not created")
         self.assertEqual(type(test_event.on_event_removed), Event, "Event sub event on_event_removed not created")
         self.assertEqual(getattr(test_event.on_event_added, "on_event_added", None), None,
@@ -46,4 +46,19 @@ class EventTests(unittest.TestCase):
                          "Event sub sub event on_event_removed is not None")
 
     def test_event_list(self):
-        event_list
+        event_list = EventList([1,2,3])
+        test_class = EventTestClass()
+        event_list.on_entry_added += test_class.increase_test_num
+        event_list.on_entry_changed += test_class.increase_test_num
+        event_list.on_entry_removed += test_class.increase_with_index
+
+        event_list.append(4)
+        self.assertEqual(test_class.test_number, 4, "event_list on_entry_added did not run")
+
+        test_class.test_number = 0
+        event_list.remove(4)
+        self.assertEqual(test_class.test_number, 4, "event_list on_entry_removed did not run")
+
+        test_class.test_number = 0
+        event_list[2] = 4
+        self.assertEqual(test_class.test_number, 4, "event_list on_entry_changed did not run")

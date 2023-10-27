@@ -42,51 +42,52 @@ class EventList(list):
 
     on_entry_changed (value)
         Runs when += or .append is called
-        value = value/object that was added to the list
+        other = value/object that was added to the list
     on_entry_removed (index, value)
-        Runs when -= or .remove is called
+        Runs when .remove is called
         index = index of removed item
-        value = object/value that was removed
+        other = object/value that was removed
     on_entries_cleared ()
         Runs when object is
     """
-    def __init__(self):
+    def __init__(self, initial_values: list=[]):
         test = list
         super().__init__()
         self.on_entry_changed = Event()
         self.on_entry_added = Event()
         self.on_entry_removed = Event()
         self.on_entries_cleared = Event()
+        self += initial_values
 
-    def __setitem__(self, key, value):
-        super(EventList, self).__setitem__(key, value)
-        self.on_entry_changed(value)
+    def __setitem__(self, key, other):
+        super(EventList, self).__setitem__(key, other)
+        self.on_entry_changed(other)
         return self
 
-    def __delitem__(self, value):
-        index = self.index(value)
-        super(EventList, self).__delitem__(value)
-        self.on_entry_added(index)
+    def __delitem__(self, other):
+        index = self.index(other)
+        super(EventList, self).__delitem__(other)
+        self.on_entry_removed(index)
         return self
 
-    def __add__(self, value):
-        super(EventList, self).__add__(value)
-        self.on_entry_removed(value)
+    def __add__(self, other):
+        super(EventList, self).__add__(other)
+        self.on_entry_added(other)
         return self
 
-    def __iadd__(self, value):
-        super(EventList, self).__iadd__(value)
-        self.on_entry_removed(value)
+    def __iadd__(self, other):
+        super(EventList, self).__iadd__(other)
+        self.on_entry_added(other)
         return self
 
-    def append(self, value):
-        super(EventList, self).append(value)
-        self.on_entry_removed(value)
+    def append(self, other):
+        super(EventList, self).append(other)
+        self.on_entry_added(other)
 
-    def remove(self, value):
-        index = self.index(value)
-        super(EventList, self).remove(value)
-        self.on_entry_added(index)
+    def remove(self, other):
+        index = self.index(other)
+        super(EventList, self).remove(other)
+        self.on_entry_removed(index, other)
 
     def clear(self):
         super(EventList, self).clear()
