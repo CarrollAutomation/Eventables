@@ -46,4 +46,4 @@ class EventTests(unittest.TestCase):
                          "Event sub sub event on_event_removed is not None")
 
     def test_event_list(self):
-        pass
+        event_list
