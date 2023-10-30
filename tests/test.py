@@ -1,6 +1,6 @@
 import unittest
 
-from simple_events.events import Event, EventList
+from src.eventables.events import Event, EventList
 from tests.models import EventTestClass
 
 

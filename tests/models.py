@@ -1,6 +1,6 @@
 class EventTestClass:
     def __init__(self):
-        from simple_events.events import Event
+        from src.eventables.events import Event
         self.event1 = Event()
         self.test_number = 0
 
